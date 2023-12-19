@@ -1,0 +1,23 @@
+<form [formGroup]="myform" (ngSubmit)="Saveuser()">
+	<div mat-dialog-title>
+		<h1>{{inputdata.title}}</h1>
+		<h5>{{inputdata.description}}</h5>
+	</div>
+
+	<div mat-dialog-content>
+		<mat-form-field>
+			<mat-label>Email</mat-label>
+			<input matInput formControlName="email">
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Password</mat-label>
+			<input matInput formControlName="password">
+		</mat-form-field>
+	</div>
+	<div mat-dialog-actions>
+		<button mat-raised-button type="submit" color="primary">Log In</button>
+		<a (click)="closepopup()" mat-raised-button color="warn">Close</a>
+		<!-- <button mat-raised-button [mat-dialog-close]="closemessage" color="accent">Cancel</button> -->
+	</div>
+
+</form>
