@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-navbar',
@@ -7,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class NavbarComponent {
 
+  @ViewChild('drawer') private drawer: MatDrawer;
+
+  public badgevisible = false;
+  badgevisibility() {
+    this.badgevisible = true; //delete notifications by default
+    //this.drawer.mode='side';
+  }
 }
