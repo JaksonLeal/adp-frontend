@@ -1,6 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { LoginService } from '../../services/login.service';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
 
 @Component({
   selector: 'app-popup',
@@ -8,10 +11,18 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrl: './popup.component.css'
 })
 export class PopupComponent implements OnInit {
+
+  public formLogIn = this.buildr.group({
+    email: this.buildr.control(''),
+    password: this.buildr.control('')
+  });
+
   inputdata: any;
   editdata: any;
   closemessage = 'closed using directive'
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private ref: MatDialogRef<PopupComponent>, private buildr: FormBuilder,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
+    private ref: MatDialogRef<PopupComponent>,
+    private buildr: FormBuilder, private loginService: LoginService
   ) {
 
   }
@@ -36,17 +47,28 @@ export class PopupComponent implements OnInit {
     this.ref.close('Closed using function');
   }
 
-  myform = this.buildr.group({
-    name: this.buildr.control(''),
-    email: this.buildr.control(''),
-    phone: this.buildr.control(''),
-    status: this.buildr.control(true)
-  });
-
-  Saveuser() {
-    /*this.service.Savecustomer(this.myform.value).subscribe(() => {
-      this.closepopup();
-    });*/
+  logIn(): void {
+    this.loginService.logIn(this.formLogIn.value).subscribe(
+      {
+        next: (response: any) => {
+          console.log("next: " + response.token);
+          this.loginService.setTokenUser(response.token);
+          const decodedToken = jwtDecode<JwtPayload>(response.token);
+          console.log(decodedToken);
+          this.loginService.getCurrentUser().subscribe((user: any) => {
+            console.log(user);
+          });
+        },
+        error: (error) => {
+          alert("error: " + error.error.text);
+        },
+        complete: () => {
+          console.log("exitoso");
+          this.closepopup();
+        }
+      }
+    );
   }
 }
+
 
